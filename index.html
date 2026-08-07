@@ -3,130 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Configuración para que parezca una App Nativa en iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Dados D&D</title>
-    
-<!-- Favicon estándar para navegadores en iOS 9 -->
-<link rel="icon" type="image/png" href="favicon.png">
-<!-- Icono para cuando guardas la web en la Pantalla de Inicio del iPod Touch -->
-<link rel="apple-touch-icon" href="favicon.png">
-    
+    <title>D&D Dice Roller - iPod Touch</title>
     <style>
         * {
             box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
-            margin: 0;
-            padding: 20px;
             background-color: #1a1a1a;
-            color: #ffffff;
+            color: #f0f0f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 10px;
             text-align: center;
         }
         h1 {
-            font-size: 1.5rem;
-            color: #e2d8b2;
+            font-size: 1.2rem;
             margin-bottom: 10px;
-        }
-        .display {
-            background-color: #2a2a2a;
-            border: 2px solid #444;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .result-main {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffca28;
-        }
-        .result-detail {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-top: 5px;
+            color: #d4af37;
         }
         .dice-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .dice-btn {
-            background: linear-gradient(145deg, #3a3a3a, #222);
-            border: 1px solid #555;
-            border-radius: 10px;
+            background-color: #2c2c2c;
+            border: 2px solid #d4af37;
             color: #fff;
-            padding: 15px 5px;
-            font-size: 1.2rem;
+            padding: 12px 5px;
+            font-size: 1rem;
             font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: background 0.1s;
         }
         .dice-btn:active {
-            background: #555;
-            transform: scale(0.96);
+            background-color: #d4af37;
+            color: #1a1a1a;
         }
-        .controls {
+        .modifiers {
+            margin-bottom: 12px;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
         }
-        .controls label {
+        .modifiers label {
             font-size: 0.9rem;
         }
-        .controls input {
+        .modifiers input {
             width: 50px;
-            background: #1a1a1a;
-            border: 1px solid #555;
-            color: white;
+            padding: 5px;
             text-align: center;
             font-size: 1rem;
-            padding: 5px;
-            border-radius: 5px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #222;
+            color: #fff;
         }
-        .btn-clear {
-            background-color: #c62828;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        .result-box {
+            background-color: #222;
+            border: 1px solid #444;
             border-radius: 8px;
+            padding: 10px;
+            min-height: 90px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #total-display {
+            font-size: 2rem;
             font-weight: bold;
-            width: 100%;
+            color: #4ade80;
+        }
+        #detail-display {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+        .clear-btn {
+            background-color: #7f1d1d;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <h1>Lanzador D&D</h1>
-
-    <div class="display">
-        <div id="result" class="result-main">-</div>
-        <div id="detail" class="result-detail">Selecciona un dado para tirar</div>
-    </div>
-
-    <div class="controls">
-        <div>
-            <label for="quantity">Cantidad: </label>
-            <input type="number" id="quantity" value="1" min="1" max="20">
-        </div>
-        <div>
-            <label for="modifier">Modificador: </label>
-            <input type="number" id="modifier" value="0">
-        </div>
-    </div>
+    <h1>D&D Dice Roller</h1>
 
     <div class="dice-grid">
         <button class="dice-btn" onclick="rollDice(4)">d4</button>
@@ -135,56 +108,40 @@
         <button class="dice-btn" onclick="rollDice(10)">d10</button>
         <button class="dice-btn" onclick="rollDice(12)">d12</button>
         <button class="dice-btn" onclick="rollDice(20)">d20</button>
-        <button class="dice-btn" onclick="rollDice(100)" style="grid-column: span 3;">d100 (Percentil)</button>
+        <button class="dice-btn" onclick="rollDice(100)">d100</button>
     </div>
 
-    <button class="btn-clear" onclick="resetDisplay()">Reiniciar</button>
+    <div class="modifiers">
+        <label for="mod">Modificador:</label>
+        <input type="number" id="mod" value="0">
+    </div>
+
+    <div class="result-box">
+        <div id="total-display">0</div>
+        <div id="detail-display">Toca un dado para tirar</div>
+    </div>
+
+    <button class="clear-btn" onclick="resetLog()">Limpiar</button>
 
     <script>
         function rollDice(sides) {
-            var qtyInput = document.getElementById('quantity').value;
-            var modInput = document.getElementById('modifier').value;
+            const modInput = parseInt(document.getElementById('mod').value) || 0;
+            const roll = Math.floor(Math.random() * sides) + 1;
+            const total = roll + modInput;
+
+            document.getElementById('total-display').innerText = total;
             
-            var qty = parseInt(qtyInput) || 1;
-            var mod = parseInt(modInput) || 0;
-            
-            if (qty < 1) qty = 1;
-
-            var rolls = [];
-            var total = 0;
-
-            for (var i = 0; i < qty; i++) {
-                var roll = Math.floor(Math.random() * sides) + 1;
-                rolls.push(roll);
-                total += roll;
+            let detailText = `d${sides}: [${roll}]`;
+            if (modInput !== 0) {
+                detailText += ` ${modInput >= 0 ? '+' : ''}${modInput}`;
             }
-
-            var finalTotal = total + mod;
-
-            document.getElementById('result').innerText = finalTotal;
-
-            var detailText = qty + "d" + sides + " [" + rolls.join(", ") + "]";
-            if (mod !== 0) {
-                detailText += (mod > 0 ? " + " : " - ") + Math.abs(mod);
-            }
-            
-            // Detección de crítico para d20
-            if (sides === 20 && qty === 1) {
-                if (rolls[0] === 20) {
-                    detailText += " — ¡CRÍTICO!";
-                } else if (rolls[0] === 1) {
-                    detailText += " — ¡PIFIA!";
-                }
-            }
-
-            document.getElementById('detail').innerText = detailText;
+            document.getElementById('detail-display').innerText = detailText;
         }
 
-        function resetDisplay() {
-            document.getElementById('result').innerText = "-";
-            document.getElementById('detail').innerText = "Selecciona un dado para tirar";
-            document.getElementById('quantity').value = 1;
-            document.getElementById('modifier').value = 0;
+        function resetLog() {
+            document.getElementById('total-display').innerText = '0';
+            document.getElementById('detail-display').innerText = 'Toca un dado para tirar';
+            document.getElementById('mod').value = '0';
         }
     </script>
 </body>
